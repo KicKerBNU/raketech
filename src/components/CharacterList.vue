@@ -23,7 +23,7 @@
         </button>
         <span class="mx-2"></span>
         <button @click="nextPage"
-         class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+         class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded disabled:opacity-50 disabled:pointer-events-none" :disabled="endIndex > characters.length">
           Next Page
         </button>
       </div>
@@ -66,17 +66,22 @@ export default defineComponent({
     const endIndex = ref<number>(12)
     const page = ref<number>(1)
     const totalPages = ref<number>(0)
+    const queryParams = ref<string>('_')
 
-    const getCharacters = async () => {
-      const response = await fetch('https://rickandmortyapi.com/api/character/?page=' + page.value);
+    const getCharacters = async (filters: String) => {
+      const apiUrl = `https://rickandmortyapi.com/api/character/?${filters}&page=${page.value}`;
+      const response = await fetch(apiUrl);
       const data: ApiResponse = await response.json() as ApiResponse;
-      for (let i = 0; i < data.results.length; i++) {
-        characters.value.push(data.results[i]);
+      if(startIndex.value){
+        for (let i = 0; i < data.results.length; i++) {
+          characters.value.push(data.results[i]);
+        }
+      }else{
+        characters.value = data.results;
       }
       totalPages.value = data.info.pages;
       updateDisplayedCharacters();
     }
-    getCharacters();
 
     const previousPage = () => {
       startIndex.value -= 12
@@ -91,11 +96,12 @@ export default defineComponent({
     const nextPage = () => {
       startIndex.value += 12
       endIndex.value += 12
-      updateDisplayedCharacters();
       if(endIndex.value > characters.value.length){
         page.value++;
-        getCharacters();
+        getCharacters(queryParams.value);
+        return;
       }
+      updateDisplayedCharacters();
     }
 
     const displayedCharacters = ref<Character[]>([])
@@ -115,9 +121,14 @@ export default defineComponent({
           searchParams.append(key, value);
         }
       }
-      console.log(searchParams.toString());
-      // Make API request using filters and update `characters` ref
-      getCharacters();
+    
+      if(searchParams.toString() === queryParams.value) return;
+      queryParams.value = searchParams.toString();
+      page.value = 1;
+      startIndex.value = 0;
+      endIndex.value = 12;
+      
+      getCharacters(searchParams.toString());
     }
 
     return {
@@ -127,6 +138,7 @@ export default defineComponent({
       endIndex,
       displayedCharacters,
       totalPages,
+      queryParams,
       previousPage,
       nextPage,
       onFiltersChanged
