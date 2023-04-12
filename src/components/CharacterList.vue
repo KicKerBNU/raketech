@@ -106,10 +106,11 @@ export default defineComponent({
       }
       displayedCharacters.value = characters.value.slice(startIndex.value, endIndex.value)
     }
-
+    
     const onFiltersChanged = (filters: Filters) => {
       const searchParams = new URLSearchParams();
-      for (const [key, value] of Object.entries(filters)) {
+      for (const key in filters) {
+        const value = filters[key];
         if (value) {
           searchParams.append(key, value);
         }

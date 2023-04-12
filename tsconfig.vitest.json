@@ -2,13 +2,11 @@
   "extends": "./tsconfig.app.json",
   "exclude": [],
   "compilerOptions": {
+    "target": "es6",
+    "module": "esnext",
     "ignoreDeprecations": "5.0",
     "composite": true,
-    "target": "es6",
-    "module": "commonjs",
-    "lib": ["es2017"],
-    "outDir": "dist",
-    "strict": true,
+    "lib": [],
     "types": ["node", "jsdom"]
   },
 }

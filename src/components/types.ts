@@ -4,4 +4,5 @@ export interface Filters {
     species: string
     type: string
     gender: string
+    [key: string]: string;
   }
