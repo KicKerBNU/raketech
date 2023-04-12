@@ -4,7 +4,7 @@
     <div class="p-8 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8 bg-gray-700">
       <div v-for="character in displayedCharacters" :key="character.id">
         <div>
-          <a href="#" class="group">
+          <a href="#" class="group" @click="onCharacterClick(character)">
             <div class="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-lg bg-gray-200 xl:aspect-h-8 xl:aspect-w-7">
               <img :src="character.image" :alt="character.name" class="h-full w-full object-cover object-center group-hover:opacity-75">
             </div>
@@ -36,6 +36,7 @@ import { defineComponent, ref} from 'vue';
 import type { Ref } from 'vue';
 import FilterCharacterList from './FilterCharacterList.vue';
 import type { Filters } from '@/components/types';
+import { useRouter } from 'vue-router'
 
 interface Character {
   id: number
@@ -61,88 +62,93 @@ export default defineComponent({
       FilterCharacterList,
     },
     setup() {
-    const characters: Ref<Character[]> = ref([])
-    const startIndex = ref<number>(0)
-    const endIndex = ref<number>(12)
-    const page = ref<number>(1)
-    const totalPages = ref<number>(0)
-    const queryParams = ref<string>('_')
+      const characters: Ref<Character[]> = ref([])
+      const startIndex = ref<number>(0)
+      const endIndex = ref<number>(12)
+      const page = ref<number>(1)
+      const totalPages = ref<number>(0)
+      const queryParams = ref<string>('_')
 
-    const getCharacters = async (filters: String) => {
-      const apiUrl = `https://rickandmortyapi.com/api/character/?${filters}&page=${page.value}`;
-      const response = await fetch(apiUrl);
-      const data: ApiResponse = await response.json() as ApiResponse;
-      if(startIndex.value){
-        for (let i = 0; i < data.results.length; i++) {
-          characters.value.push(data.results[i]);
+      const getCharacters = async (filters: String) => {
+        const apiUrl = `https://rickandmortyapi.com/api/character/?${filters}&page=${page.value}`;
+        const response = await fetch(apiUrl);
+        const data: ApiResponse = await response.json() as ApiResponse;
+        if(startIndex.value){
+          for (let i = 0; i < data.results.length; i++) {
+            characters.value.push(data.results[i]);
+          }
+        }else{
+          characters.value = data.results;
         }
-      }else{
-        characters.value = data.results;
+        totalPages.value = data.info.pages;
+        updateDisplayedCharacters();
       }
-      totalPages.value = data.info.pages;
-      updateDisplayedCharacters();
-    }
 
-    const previousPage = () => {
-      startIndex.value -= 12
-      endIndex.value -= 12
-      if(startIndex.value < 0){
-        startIndex.value = 0
-        endIndex.value = 12
-      }
-      updateDisplayedCharacters();
-    }
-
-    const nextPage = () => {
-      startIndex.value += 12
-      endIndex.value += 12
-      if(endIndex.value > characters.value.length){
-        page.value++;
-        getCharacters(queryParams.value);
-        return;
-      }
-      updateDisplayedCharacters();
-    }
-
-    const displayedCharacters = ref<Character[]>([])
-    const updateDisplayedCharacters = () => {
-      if(startIndex.value === 0) {
-        displayedCharacters.value = characters.value.slice(0, 12)
-        return
-      }
-      displayedCharacters.value = characters.value.slice(startIndex.value, endIndex.value)
-    }
-    
-    const onFiltersChanged = (filters: Filters) => {
-      const searchParams = new URLSearchParams();
-      for (const key in filters) {
-        const value = filters[key];
-        if (value) {
-          searchParams.append(key, value);
+      const previousPage = () => {
+        startIndex.value -= 12
+        endIndex.value -= 12
+        if(startIndex.value < 0){
+          startIndex.value = 0
+          endIndex.value = 12
         }
+        updateDisplayedCharacters();
+      }
+
+      const nextPage = () => {
+        startIndex.value += 12
+        endIndex.value += 12
+        if(endIndex.value > characters.value.length){
+          page.value++;
+          getCharacters(queryParams.value);
+          return;
+        }
+        updateDisplayedCharacters();
+      }
+
+      const displayedCharacters = ref<Character[]>([])
+      const updateDisplayedCharacters = () => {
+        if(startIndex.value === 0) {
+          displayedCharacters.value = characters.value.slice(0, 12)
+          return
+        }
+        displayedCharacters.value = characters.value.slice(startIndex.value, endIndex.value)
+      }
+      const router = useRouter();
+      const onCharacterClick = (character: Character) => {
+        router.push({ name: 'character-detail', params: { id: character.id} })
       }
     
-      if(searchParams.toString() === queryParams.value) return;
-      queryParams.value = searchParams.toString();
-      page.value = 1;
-      startIndex.value = 0;
-      endIndex.value = 12;
+      const onFiltersChanged = (filters: Filters) => {
+        const searchParams = new URLSearchParams();
+        for (const key in filters) {
+          const value = filters[key];
+          if (value) {
+            searchParams.append(key, value);
+          }
+        }
       
-      getCharacters(searchParams.toString());
-    }
+        if(searchParams.toString() === queryParams.value) return;
+        queryParams.value = searchParams.toString();
+        page.value = 1;
+        startIndex.value = 0;
+        endIndex.value = 12;
+        
+        getCharacters(searchParams.toString());
+      }
 
-    return {
-      page,
-      characters,
-      startIndex,
-      endIndex,
-      displayedCharacters,
-      totalPages,
-      queryParams,
-      previousPage,
-      nextPage,
-      onFiltersChanged
-    }
+      return {
+        page,
+        characters,
+        startIndex,
+        endIndex,
+        displayedCharacters,
+        totalPages,
+        queryParams,
+        previousPage,
+        nextPage,
+        onFiltersChanged,
+        onCharacterClick
+      }
   }
 });
 

@@ -6,3 +6,23 @@ export interface Filters {
     gender: string
     [key: string]: string;
   }
+
+export interface Character {
+    id: number
+    name: string
+    species: string
+    status: string
+    image: string
+    type: string
+    episode: string[]
+  }
+  
+  export interface ApiResponse {
+    info: {
+      count: number;
+      pages: number;
+      next: string | null;
+      prev: string | null;
+    };
+    results: Character[];
+  }
