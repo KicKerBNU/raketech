@@ -4,7 +4,11 @@
   "compilerOptions": {
     "ignoreDeprecations": "5.0",
     "composite": true,
-    "lib": [],
+    "target": "es6",
+    "module": "commonjs",
+    "lib": ["es2017"],
+    "outDir": "dist",
+    "strict": true,
     "types": ["node", "jsdom"]
   },
 }
