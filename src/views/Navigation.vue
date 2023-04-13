@@ -25,10 +25,6 @@
         </button>
       </div>
       <div class="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
-        <div class="flex flex-shrink-0 items-center">
-          <img class="block h-8 w-auto lg:hidden" src="https://cdn.shopify.com/s/files/1/0014/2491/6549/collections/R_M_collab_logo.jpg?v=1623834373" alt="Your Company">
-          <img class="hidden h-8 w-auto lg:block" src="https://cdn.shopify.com/s/files/1/0014/2491/6549/collections/R_M_collab_logo.jpg?v=1623834373" alt="Your Company">
-        </div>
         <div class="hidden sm:ml-6 sm:block">
           <div class="flex space-x-4">
             <!-- Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" -->
@@ -38,13 +34,13 @@
             </RouterLink>
             <RouterLink 
                 class="text-gray-300 hover:bg-gray-700 hover:text-white block rounded-md px-3 py-2 text-base font-medium" 
-                to="/about">
-                Dark Mode
+                to="/create">
+                Create Hero
             </RouterLink>
 
             <a href="#" class="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium">Favorites</a>
 
-            <a href="#" class="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium">Create Hero</a>
+            <a href="#" class="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium">Dark Mode</a>
           </div>
         </div>
       </div>
@@ -61,13 +57,13 @@
       </RouterLink>
       <RouterLink 
         class="text-gray-300 hover:bg-gray-700 hover:text-white block rounded-md px-3 py-2 text-base font-medium" 
-        to="/about">
-        Dark Mode
+        to="/create">
+        Create Hero
       </RouterLink>
 
       <a href="#" class="text-gray-300 hover:bg-gray-700 hover:text-white block rounded-md px-3 py-2 text-base font-medium">Favorites</a>
 
-      <a href="#" class="text-gray-300 hover:bg-gray-700 hover:text-white block rounded-md px-3 py-2 text-base font-medium">Create Hero</a>
+      <a href="#" class="text-gray-300 hover:bg-gray-700 hover:text-white block rounded-md px-3 py-2 text-base font-medium">Dark Mode</a>
     </div>
   </div>
 </nav>

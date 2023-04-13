@@ -1,6 +1,20 @@
 <template>
   <section>
     <FilterCharacterList @filtersChanged="onFiltersChanged"  />
+    <!-- Todo Component Store Item -->
+    <div v-if="storeHero" class="p-8 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8 bg-gray-700">
+        <div v-for="item in storeHero">
+          <a href="#" class="group">
+              <div class="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-lg bg-gray-200 xl:aspect-h-8 xl:aspect-w-7">
+                <img :src="item.imageUrl" :alt="item.name" class="h-full w-full object-cover object-center group-hover:opacity-75">
+              </div>
+              <p class="text-white">{{ item.id }}</p>
+              <h3 class="mt-4 text-sm text-white">{{ item.name }}</h3>
+              <p class="mt-1 text-lg font-medium text-white">{{ item.gender }}</p>
+          </a>
+        </div>  
+    </div>
+    <!-- Todo Component Character Item -->
     <div class="p-8 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8 bg-gray-700">
       <div v-for="character in displayedCharacters" :key="character.id">
         <div>
@@ -15,6 +29,7 @@
         </div>
       </div>
     </div>
+    <!-- Todo Component Pagination -->
     <div class="border border-gray-300 rounded-md flex justify-between items-center py-4 px-6">
       <p class="text-gray-600">Showing from {{ startIndex+1 }} to {{ endIndex }} characters</p>
       <div class="ml-6">
@@ -32,29 +47,14 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref} from 'vue';
+import { defineComponent, ref, watchEffect } from 'vue';
 import type { Ref } from 'vue';
 import FilterCharacterList from './FilterCharacterList.vue';
-import type { Filters } from '@/components/types';
+import type { Filters, Character, ApiResponse, Hero } from '@/components/types';
 import { useRouter } from 'vue-router'
-
-interface Character {
-  id: number
-  name: string
-  species: string
-  status: string
-  image: string
-}
-
-interface ApiResponse {
-  info: {
-    count: number;
-    pages: number;
-    next: string | null;
-    prev: string | null;
-  };
-  results: Character[];
-}
+import type { Store } from 'pinia';
+import { useStore } from '../stores/store';
+import { computed } from '@vue/reactivity';
 
 export default defineComponent({
     name: 'CharacterList',
@@ -62,6 +62,8 @@ export default defineComponent({
       FilterCharacterList,
     },
     setup() {
+      const store = useStore();
+      const storeHero = computed(() => store.heroes);
       const characters: Ref<Character[]> = ref([])
       const startIndex = ref<number>(0)
       const endIndex = ref<number>(12)
@@ -144,6 +146,7 @@ export default defineComponent({
         displayedCharacters,
         totalPages,
         queryParams,
+        storeHero,
         previousPage,
         nextPage,
         onFiltersChanged,

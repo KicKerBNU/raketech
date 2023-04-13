@@ -2,12 +2,18 @@ import { createRouter, createWebHistory } from 'vue-router';
 import type { RouteRecordRaw } from 'vue-router';
 import CharacterDetail from '../views/CharacterDetail.vue';
 import HomeView from '@/views/HomeView.vue';
+import CreateHeroView from '../views/CreateHeroView.vue';
 const routes: RouteRecordRaw[] = [
   // other routes
   {
     path: '/',
     name: 'home',
     component: HomeView
+  },
+  {
+    path: '/create',
+    name: 'create-hero',
+    component: CreateHeroView
   },
   {
     path: '/characters/:id',

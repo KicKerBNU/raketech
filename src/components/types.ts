@@ -16,6 +16,12 @@ export interface Character {
     type: string
     episode: string[]
   }
+
+  export interface Hero {
+    name: string
+    gender: string
+    imageUrl: string
+  }
   
   export interface ApiResponse {
     info: {
