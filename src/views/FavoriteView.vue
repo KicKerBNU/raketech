@@ -10,7 +10,7 @@
     <Marker :options="markerOptions" />
   </GoogleMap>
 </template>
-<script setup>
+<script setup lang="ts">
 import { GoogleMap, Marker } from 'vue3-google-map'
 import { ref } from 'vue'
 
